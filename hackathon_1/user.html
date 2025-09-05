@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upcoming Events</title>
+
+<style>
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+.container {
+  max-width: 1000px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+.header {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  padding: 20px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.header h1 {
+  color: white;
+  font-size: 2em;
+  font-weight: 400;
+  margin: 0;
+}
+#logoutBtn {
+  background: #ff4757;
+  border: none;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+#logoutBtn:hover {
+  background: #e84118;
+}
+.table-container {
+  overflow-x: auto;
+  padding: 20px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>Upcoming Events</h1>
+    <button id="logoutBtn">Logout</button>
+  </div>
+  <div class="table-container">
+    <table id="eventsTable">
+      <thead>
+        <tr>
+          <th>Event Name</th>
+          <th>Venue</th>
+          <th>Date & Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="3">Loading events...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal" id="eventModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close" id="closeModal">&times;</span>
+      <h2 id="modalEventName">Event Name</h2>
+    </div>
+    <div class="modal-body" id="modalBody">Event details go here...</div>
+  </div>
+</div>
+
+<script type="module">
+// Firebase SDK
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+import { getFirestore, collection, query, where, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAQtd4Ap9S1XtFadwpRO7jR7I35nG7ZZM0",
+  authDomain: "orignal-b7e9a.firebaseapp.com",
+  projectId: "orignal-b7e9a",
+  storageBucket: "orignal-b7e9a.firebasestorage.app",
+  messagingSenderId: "450254224218",
+  appId: "1:450254224218:web:ab5df2fd62a0910d435163",
+  measurementId: "G-Q8DSCSDBZP"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+const tableBody = document.querySelector("#eventsTable tbody");
+const modal = document.getElementById("eventModal");
+const modalEventName = document.getElementById("modalEventName");
+const modalBody = document.getElementById("modalBody");
+const closeModal = document.getElementById("closeModal");
+const logoutBtn = document.getElementById("logoutBtn");
+
+// 🔹 Logout functionality
+logoutBtn.addEventListener("click", () => {
+  signOut(auth).then(() => {
+    alert("You have been logged out.");
+    window.location.href = "register.html"; // redirect to register page
+  }).catch((error) => {
+    console.error("Logout error:", error);
+    alert("Error logging out: " + error.message);
+  });
+});
+
+// 🔹 Redirect if user not logged in
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    window.location.href = "register.html"; // go back to register if no user
+  }
+});
+
+// Today's date in YYYY-MM-DD
+const today = new Date();
+const todayString = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+
+// Firestore query
+const eventsCollection = collection(db,"events");
+const q = query(eventsCollection, where("eventDate",">=",todayString), orderBy("eventDate","asc"));
+
+// Fetch and display events
+onSnapshot(q, snapshot=>{
+  tableBody.innerHTML = "";
+  if(snapshot.empty){
+    tableBody.innerHTML = `<tr><td colspan="3">No upcoming events scheduled.</td></tr>`;
+    return;
+  }
+  snapshot.forEach(doc=>{
+    const event = doc.data();
+    const tr = document.createElement("tr");
+    const dateFormatted = new Date(event.eventDate).toLocaleDateString('en-GB',{ weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    tr.innerHTML = `
+      <td class="event-name">${event.eventName} (${event.ltSelection || ''})</td>
+      <td class="venue">${event.venue || '-'}</td>
+      <td class="time">${dateFormatted} at ${event.eventTime}</td>
+    `;
+    // Show modal on click
+    tr.addEventListener("click", ()=>{
+      modalEventName.textContent = event.eventName;
+      modalBody.innerHTML = `
+        <p><b>Venue:</b> ${event.venue || '-'}</p>
+        <p><b>Time:</b> ${dateFormatted} at ${event.eventTime}</p>
+        <p><b>Description:</b> ${event.eventDescription || 'No details available.'}</p>
+      `;
+      modal.style.display = "block";
+    });
+    tableBody.appendChild(tr);
+  });
+});
+
+// Close modal
+closeModal.onclick = () => { modal.style.display="none"; };
+window.onclick = e => { if(e.target==modal) modal.style.display="none"; };
+</script>
+</body>
+</html>

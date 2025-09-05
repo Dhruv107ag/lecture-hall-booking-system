@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard</title>
+  <style>
+    
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      width: 500px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    h1, h2 {
+      text-align: center;
+      color: #444;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+    }
+    input, select, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+   <button type="button" id="logoutBtn">Logout</button>
+
+    <h1>Admin Dashboard</h1>
+    <h2>Event Management System</h2>
+<form id="eventForm">
+    <label for="ltSelect">Select Lecture Theater</label>
+    <select id="ltSelect">
+      <option value="">Choose a Lecture Theater</option>
+      <option value="LT1">LT1</option>
+      <option value="LT2">LT2</option>
+      <option value="LT3">LT3</option>
+    </select>
+
+    <label for="eventName">Event Name</label>
+    <input type="text" id="eventName" placeholder="Enter event name..."/>
+
+    <label for="eventDate">Event Date</label>
+    <input type="date" id="eventDate"/>
+
+    <label for="eventTime">Event Time</label>
+    <input type="time" id="eventTime"/>
+
+    <label for="eventDescription">Event Description</label>
+    <textarea id="eventDescription" placeholder="Describe your event in detail..."></textarea>
+
+
+<small id="charCounter">0 characters</small>
+
+<p id="statusMessage" style="display: none; text-align: center;"></p>
+
+    <button type="submit">Save Event Details</button>
+</form>
+
+<h2>Saved Events</h2>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module" src="admin1.js" >
+   
+  </script>
+</body>
+</html>

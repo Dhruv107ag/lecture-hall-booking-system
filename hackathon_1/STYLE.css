@@ -1,0 +1,72 @@
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Body Styling */
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+
+  /* Add LNMIIT image as background */
+  background: url("https://lnmiit.ac.in/wp-content/uploads/2023/06/LNMIIT-VIEW.jpg") no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* Container Box */
+.auth-container {
+  background: rgba(255, 255, 255, 0.9); /* semi-transparent so background shows */
+  padding: 2rem 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+}
+
+/* Heading */
+.auth-container h2 {
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Input Fields */
+.auth-container input {
+  width: 100%;
+  padding: 0.9rem;
+  margin: 0.6rem 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.auth-container input:focus {
+  border-color: #2575fc;
+  box-shadow: 0 0 5px rgba(37, 117, 252, 0.5);
+}
+
+/* Buttons */
+.auth-container button {
+  width: 100%;
+  padding: 0.9rem;
+  margin-top: 1rem;
+  background: #2575fc;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.auth-container button:hover {
+  background: #1a5dd8;
+}
